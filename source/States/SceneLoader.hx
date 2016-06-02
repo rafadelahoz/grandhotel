@@ -89,7 +89,7 @@ class SceneLoader
             }
         }
 
-        var hotspot : Hotspot = new Hotspot(id, x, y, w, h);
+        var hotspot : Hotspot = new Hotspot(id, x, y, w, h, scene);
         scene.addHotspot(hotspot);
     }
 

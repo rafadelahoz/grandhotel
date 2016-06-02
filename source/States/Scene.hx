@@ -6,9 +6,13 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.addons.display.FlxBackdrop;
 
-class Scene extends FlxState
+import flixel.addons.ui.FlxUIState;
+
+class Scene extends FlxUIState
 {
     var id : String;
+
+    var editor : EditorController;
 
     var backgrounds : FlxTypedGroup<FlxSprite>;
     var hotspots : FlxTypedGroup<Hotspot>;
@@ -53,6 +57,9 @@ class Scene extends FlxState
         add(backgrounds);
         add(hotspots);
 
+        editor = new EditorController(this);
+        add(editor);
+
         trace("all done");
 	}
 
@@ -60,4 +67,9 @@ class Scene extends FlxState
 	{
 		super.update(elapsed);
 	}
+
+    public function inEditionMode() : Bool
+    {
+        return editor.inEdition;
+    }
 }

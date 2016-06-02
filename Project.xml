@@ -29,6 +29,7 @@
 
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
+	<classpath name="source/Editor" />
 	<classpath name="source/States" />
 	<classpath name="source/Elements"/>
 	<assets path="assets" />
