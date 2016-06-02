@@ -9,6 +9,15 @@ class Main extends Sprite
 	{
 		super();
 
+		var editorMode : Bool = false;
+		for (arg in Sys.args())
+		{
+			if (arg == "-e" || arg == "e" || arg == "editor")
+			{
+				editorMode = true;
+			}
+		}
+
 		var zoom : Int = -1;
 		var framerate : Int = 60;
 		var skipSplash : Bool = true;

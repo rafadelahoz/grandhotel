@@ -22,11 +22,11 @@ class Scene extends FlxState
 
     function loadScene(sceneId : String)
     {
-        addBackground("test-bg-0.png");
-        addHotspot("Picture", 413, 89, 337, 162);
+        var loader : SceneLoader = new SceneLoader(this);
+        loader.load(id);
     }
 
-    function addBackground(bgId : String)
+    public function addBackground(bgId : String)
     {
         var bg : FlxSprite = new FlxSprite(0, 0, "assets/backgrounds/" + bgId);
         bg.setGraphicSize(FlxG.width, FlxG.height);
@@ -36,9 +36,8 @@ class Scene extends FlxState
         trace(FlxG.width + ", " + FlxG.height);
     }
 
-    function addHotspot(Id : String, X : Float, Y : Float, Width : Float, Height : Float)
+    public function addHotspot(hotspot : Hotspot)
     {
-        var hotspot : Hotspot = new Hotspot(Id, X, Y, Width, Height);
         hotspots.add(hotspot);
     }
 

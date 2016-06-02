@@ -20,7 +20,7 @@ class MenuState extends FlxState
 
 		if (FlxG.mouse.justPressed)
 		{
-			FlxG.switchState(new Scene("bananas"));
+			FlxG.switchState(new Scene("scene"));
 		}
 	}
 }
