@@ -10,8 +10,8 @@ class EditorController extends FlxUIGroup
     public var inEdition : Bool;
 
     public var selectedHotspot : Hotspot;
-    
-    var inspectorPanel : FlxUIGroup;
+
+    var inspectorPanel : InspectorPanel;
 
     public function new(Scene : Scene)
     {
@@ -21,49 +21,50 @@ class EditorController extends FlxUIGroup
 
         inEdition = false;
 
-        add(new FlxUIButton(5, 5, "Editor button!", function() {trace("Hi!");}));
-        
-        inspectorPanel = new InspectorPanel(5, 40);
+        add(new FlxUIButton(5, 5, "Inspector", function() {inspectorPanel.visible = !inspectorPanel.visible;}));
+
+        inspectorPanel = new InspectorPanel(5, 32);
         add(inspectorPanel);
     }
 
     override public function update(elapsed : Float)
     {
-        if (FlxG.keys.justPressed.E)
+        if (FlxG.keys.justPressed.E && FlxG.keys.pressed.ALT)
             inEdition = !inEdition;
 
         visible = inEdition;
-        
+
         if (inEdition)
         {
             handleEdition();
         }
-        else 
+        else
         {
             cleanEdition();
         }
 
         super.update(elapsed);
     }
-    
+
     function handleEdition()
     {
         // Let the user select a hotspot
-        if (FlxG.mouse.justPressed) 
+        if (FlxG.mouse.justPressed)
         {
             for (hotspot in scene.hotspots)
             {
                 if (hotspot.mouseOver())
                 {
                     selectedHotspot = hotspot;
+                    inspectorPanel.setSelectedHotspot(selectedHotspot);
                     return;
                 }
             }
         }
     }
-    
+
     function cleanEdition()
     {
-        
+
     }
 }

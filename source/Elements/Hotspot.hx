@@ -30,7 +30,9 @@ class Hotspot extends FlxSprite
             {
                 trace(id);
             }
-        } else {
+        }
+        else
+        {
             visible = true;
         }
 
