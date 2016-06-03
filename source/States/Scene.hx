@@ -12,10 +12,10 @@ class Scene extends FlxUIState
 {
     var id : String;
 
-    var editor : EditorController;
+    public var editor : EditorController;
 
-    var backgrounds : FlxTypedGroup<FlxSprite>;
-    var hotspots : FlxTypedGroup<Hotspot>;
+    public var backgrounds : FlxTypedGroup<FlxSprite>;
+    public var hotspots : FlxTypedGroup<Hotspot>;
 
     public function new(sceneId : String)
     {

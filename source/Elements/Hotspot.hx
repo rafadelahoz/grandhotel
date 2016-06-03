@@ -37,7 +37,7 @@ class Hotspot extends FlxSprite
         super.update(elapsed);
     }
 
-    function mouseOver() : Bool
+    public function mouseOver() : Bool
     {
         var mx : Float = FlxG.mouse.x;
         var my : Float = FlxG.mouse.y;
