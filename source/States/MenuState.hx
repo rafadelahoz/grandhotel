@@ -12,6 +12,8 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
+		
+		FlxG.mouse.useSystemCursor = true;
 	}
 
 	override public function update(elapsed:Float):Void
