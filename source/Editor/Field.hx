@@ -7,20 +7,19 @@ class Field extends FlxUIGroup
     var label : FlxUIText;
     var field : FlxUIInputText;
 
-    var callback : String -> Void;
-
-    public function new(X : Float, Y : Float, Label : String, ?UpdateCallback : String -> Void = null)
+    public function new(X : Float, Y : Float, Label : String, ?UpdateCallback : String -> String -> Void = null)
     {
         super(X, Y);
 
         label = new FlxUIText(X, Y, Label);
+        
         var space : Float = Math.max(label.width + 2, 40);
+        
         field = new FlxUIInputText(X + space, Y, "");
-
+        field.callback = UpdateCallback;
+        
         add(label);
         add(field);
-
-        callback = UpdateCallback;
     }
 
     public var text(get, set) : String;
@@ -38,10 +37,5 @@ class Field extends FlxUIGroup
     override public function update(elapsed : Float)
     {
         super.update(elapsed);
-
-        if (callback != null)
-        {
-            callback(field.text);
-        }
     }
 }

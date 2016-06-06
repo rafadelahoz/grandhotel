@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scene id="scene">
     <backgrounds>
-        <bg id="bg0" image="overlay.png"/>
+        <!--<bg id="bg0" image="overlay.png"/>-->
     </backgrounds>
     <hotspots>
         <hotspot id="Picture" x="413" y="89" w="337" h="162"/>

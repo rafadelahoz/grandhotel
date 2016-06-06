@@ -20,7 +20,7 @@ class InspectorPanel extends FlxUIGroup
     {
         super(X, Y);
 
-        add(new FlxUISprite(0, 0).makeGraphic(200, 200, 0xFF441494));
+        add(new FlxUISprite(0, 0).makeGraphic(200, 200, 0x66333333));
 
         title = new FlxUIText(pLeft, 2, 0, "Inspector: ");
 
@@ -43,6 +43,11 @@ class InspectorPanel extends FlxUIGroup
     {
         selectedHotspot = hotspot;
 
+        refreshSelectedData();
+    }
+    
+    function refreshSelectedData()
+    {
         idField.text = selectedHotspot.id;
         xPosField.text = "" + selectedHotspot.x;
         yPosField.text = "" + selectedHotspot.y;
@@ -54,6 +59,7 @@ class InspectorPanel extends FlxUIGroup
     {
         if (selectedHotspot != null)
         {
+            refreshSelectedData();
         }
         else
         {
@@ -67,7 +73,7 @@ class InspectorPanel extends FlxUIGroup
         super.update(elapsed);
     }
 
-    function updateId(newId : String)
+    function updateId(newId : String, action : String)
     {
         if (selectedHotspot != null)
         {
@@ -75,7 +81,7 @@ class InspectorPanel extends FlxUIGroup
         }
     }
 
-    function updateX(newX : String)
+    function updateX(newX : String, action : String)
     {
         if (selectedHotspot != null)
         {
@@ -83,7 +89,7 @@ class InspectorPanel extends FlxUIGroup
         }
     }
 
-    function updateY(newY : String)
+    function updateY(newY : String, action : String)
     {
         if (selectedHotspot != null)
         {
@@ -91,7 +97,7 @@ class InspectorPanel extends FlxUIGroup
         }
     }
 
-    function updateW(newW : String)
+    function updateW(newW : String, action : String)
     {
         if (selectedHotspot != null)
         {
@@ -99,7 +105,7 @@ class InspectorPanel extends FlxUIGroup
         }
     }
 
-    function updateH(newH : String)
+    function updateH(newH : String, action : String)
     {
         if (selectedHotspot != null)
         {
