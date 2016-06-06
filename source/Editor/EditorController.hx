@@ -6,6 +6,7 @@ import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 import flixel.addons.ui.FlxUIButton;
 import flixel.addons.ui.FlxUIGroup;
+import flixel.util.FlxSpriteUtil;
 
 class EditorController extends FlxUIGroup
 {
@@ -60,27 +61,55 @@ class EditorController extends FlxUIGroup
     static var TOOL_DRAG_POINT : String = "DragPoint";
     
     var currentTool : String;
+    var selector : SelectorTool;
 
     function handleEdition()
     {
         // Let the user select a hotspot
         if (FlxG.mouse.justPressed)
         {
+            var operationPerformed : Bool = false;
+            
             // If the current hotspot is clicked, drag
-            if (selectedHotspot != null && selectedHotspot.mouseOver())
+            if (selectedHotspot != null)
             {
-                currentTool = TOOL_DRAG_ELEM;
-                add(new DraggerTool(selectedHotspot, null, this, function() {
-                    currentTool = TOOL_NONE;
-                }));
+                if (selector != null && selector.resizable && selector.resizer.mouseOver())
+                {
+                    currentTool = TOOL_DRAG_POINT;
+                    add(new DraggerTool(selector.resizer, null, this, 
+                        function() {
+                            currentTool = TOOL_NONE;
+                        }, function() {
+                            selector.onResize();
+                        })
+                    );
+                    operationPerformed = true;
+                } 
+                else if (selectedHotspot.mouseOver())
+                {
+                    currentTool = TOOL_DRAG_ELEM;
+                    add(new DraggerTool(selectedHotspot, null, this, function() {
+                        currentTool = TOOL_NONE;
+                    }));
+                    
+                    operationPerformed = true;
+                }
             }
-            else 
+            
+            if (!operationPerformed)
             {
                 for (hotspot in scene.hotspots)
                 {
                     if (hotspot.mouseOver())
                     {
+                        if (selectedHotspot != null && selector != null) {
+                            remove(selector);
+                            selector.destroy();
+                            selector = null;
+                        }
+                        
                         selectedHotspot = hotspot;
+                        add(selector = new SelectorTool(selectedHotspot, true));
                         inspectorPanel.setSelectedHotspot(selectedHotspot);
                         return;
                     }
@@ -95,66 +124,95 @@ class EditorController extends FlxUIGroup
     }
 }
 
-class DraggerTool extends FlxSprite
+class SelectorTool extends FlxUIGroup
 {
-    var editor : EditorController;
-    var callback : Void -> Void;
+    static var padding : Int = 4;
+    static var halfPad : Int = Std.int(padding/2);
+    static var doublePad : Int = Std.int(padding/2);
     
-    var target : FlxObject;
-    var anchor : FlxPoint;
+    public var resizable : Bool;
+    public var resizer : Resizer;
     
-    public function new(Target : FlxObject, Anchor : FlxPoint, Editor : EditorController, ?Callback : Void -> Void = null)
+    var cursorFrame : FlxSprite;
+    public var target : FlxObject;
+    
+    public function new(Target : FlxObject, ?Resizable : Bool = false)
     {
-        super(0, 0);
-        
-        visible = false;
-        
-        editor = Editor;
-        callback = Callback;
-        
         target = Target;
-        anchor = Anchor;
+        resizable = Resizable;
         
-        if (anchor == null)
+        super(target.x - padding, target.y - padding);
+        
+        cursorFrame = new FlxSprite(0, 0);
+        refreshGraphic();
+        
+        add(cursorFrame);
+        
+        if (resizable)
         {
-            anchor = DraggerTool.getAnchor(target);
+            resizer = new Resizer(width - doublePad, height - doublePad, 8);
+            add(resizer);
+        }
+    }
+    
+    public function refreshGraphic()
+    {        
+        cursorFrame.makeGraphic(Std.int(target.width + doublePad), Std.int(target.height + doublePad), 0x00000000);
+        FlxSpriteUtil.drawRoundRect(cursorFrame, halfPad, halfPad, cursorFrame.width - padding, cursorFrame.height - padding, padding, padding, 0x00000000, {color : 0xFFDDDDDD, thickness: 2});
+    }
+    
+    public function onResize()
+    {
+        var newWidth = resizer.x - target.x;
+        var newHeight = resizer.y - target.y;
+        
+        if (newWidth != target.width || newHeight != target.height) 
+        {
+            target.width = newWidth;
+            target.height = newHeight;
+        
+            if (Std.is(target, Hotspot))
+            {
+                cast(target, Hotspot).onResize(target.width, target.height);
+            }
+            
+            refreshGraphic();
         }
     }
     
     override public function update(elapsed : Float)
     {
-        if (!FlxG.mouse.pressed)
-        {
-            target = null;
-            anchor = null;
-            
-            editor.remove(this);
-            destroy();
-            
-            
-            if (callback != null)
-            {
-                callback();
-            }
-            
-            return;
-        }
-        
         if (target != null)
         {
-            target.x = FlxG.mouse.x - anchor.x;
-            target.y = FlxG.mouse.y - anchor.y;
+            x = target.x - padding;
+            y = target.y - padding;
         }
         
         super.update(elapsed);
     }
+}
+
+class Resizer extends FlxSprite
+{
+    var size : Int;
+    var halfSize : Int;
     
-    public static function getAnchor(object : FlxObject) : FlxPoint
+    public function new(X : Float, Y : Float, Size : Int)
     {
-        var anchor : FlxPoint = new FlxPoint();
-        anchor.x = FlxG.mouse.x - object.x;
-        anchor.y = FlxG.mouse.y - object.y;
+        super(X, Y);
         
-        return anchor;
+        size = Size;
+        halfSize = Std.int(size/2);
+        
+        makeGraphic(size, size, 0x00000000);
+        FlxSpriteUtil.drawCircle(this, halfSize, halfSize, halfSize);
+    }
+    
+    public function mouseOver() : Bool
+    {
+        var mx : Float = FlxG.mouse.x;
+        var my : Float = FlxG.mouse.y;
+
+        return getHitbox().containsPoint(new FlxPoint(mx, my));
     }
 }

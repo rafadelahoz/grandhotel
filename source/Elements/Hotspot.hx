@@ -16,7 +16,7 @@ class Hotspot extends FlxSprite
         super(X, Y);
 
         id = Id;
-        makeGraphic(Std.int(Width), Std.int(Height), 0x44440044);
+        onResize(Width, Height);
 
         scene = Scene;
     }
@@ -45,5 +45,10 @@ class Hotspot extends FlxSprite
         var my : Float = FlxG.mouse.y;
 
         return getHitbox().containsPoint(new FlxPoint(mx, my));
+    }
+    
+    public function onResize(width : Float, height : Float)
+    {
+        makeGraphic(Std.int(width), Std.int(height), 0x44440044);
     }
 }
