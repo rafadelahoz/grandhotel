@@ -12,7 +12,7 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		
+
 		FlxG.mouse.useSystemCursor = true;
 	}
 
@@ -22,7 +22,7 @@ class MenuState extends FlxState
 
 		if (FlxG.mouse.justPressed)
 		{
-			FlxG.switchState(new Scene("scene2"));
+			FlxG.switchState(new Scene("scene"));
 		}
 	}
 }

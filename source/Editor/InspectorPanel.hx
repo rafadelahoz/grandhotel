@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxSprite;
 import flixel.addons.ui.*;
 
 class InspectorPanel extends FlxUIGroup
@@ -26,10 +27,10 @@ class InspectorPanel extends FlxUIGroup
 
         idField = new Field(pLeft, 20, "Id", updateId);
 
-        xPosField = new Field(pLeft, 36, "X", updateX);
-        yPosField = new Field(pLeft, 46, "Y", updateY);
-        widthField = new Field(pLeft, 56, "Width", updateW);
-        heightField = new Field(pLeft, 66, "Height", updateH);
+        xPosField = new Field(pLeft, 36, "X", true, updateX);
+        yPosField = new Field(pLeft, 46, "Y", true, updateY);
+        widthField = new Field(pLeft, 56, "Width", true, updateW);
+        heightField = new Field(pLeft, 66, "Height", true, updateH);
 
         add(title);
         add(idField);
@@ -45,7 +46,7 @@ class InspectorPanel extends FlxUIGroup
 
         refreshSelectedData();
     }
-    
+
     function refreshSelectedData()
     {
         idField.text = selectedHotspot.id;
@@ -71,6 +72,28 @@ class InspectorPanel extends FlxUIGroup
         }
 
         super.update(elapsed);
+    }
+
+    public function hasFocus() : Bool
+    {
+        if (!visible)
+            return false;
+
+        for (field in iterator(filter))
+        {
+            var ffield : Field = cast(field, Field);
+            if (ffield.hasFocus())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function filter(elem : FlxSprite) : Bool
+    {
+        return Std.is(elem, Field);
     }
 
     function updateId(newId : String, action : String)

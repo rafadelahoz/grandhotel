@@ -25,7 +25,10 @@ class EditorController extends FlxUIGroup
 
         inEdition = false;
 
-        add(new FlxUIButton(5, 5, "Inspector", function() {inspectorPanel.visible = !inspectorPanel.visible;}));
+        var inspectorButton : FlxUIButton = new FlxUIButton(5, 5, "Inspector", function() {inspectorPanel.visible = !inspectorPanel.visible;});
+        add(inspectorButton);
+        var addHotspotButton : FlxUIButton = new FlxUIButton(inspectorButton.x + inspectorButton.width + 5, 5, "Add Hotspot", function() { currentTool = TOOL_ADD_HOTSPOT; });
+        add(addHotspotButton);
 
         inspectorPanel = new InspectorPanel(5, 32);
         add(inspectorPanel);
@@ -39,6 +42,7 @@ class EditorController extends FlxUIGroup
             if (inEdition)
             {
                 currentTool = TOOL_NONE;
+                deselectHotspot();
             }
         }
 
@@ -59,62 +63,103 @@ class EditorController extends FlxUIGroup
     static var TOOL_NONE : String = "None";
     static var TOOL_DRAG_ELEM : String = "DragElem";
     static var TOOL_DRAG_POINT : String = "DragPoint";
-    
+    static var TOOL_ADD_HOTSPOT : String = "AddHotspot";
+
     var currentTool : String;
     var selector : SelectorTool;
 
     function handleEdition()
     {
-        // Let the user select a hotspot
-        if (FlxG.mouse.justPressed)
+        switch (currentTool)
         {
-            var operationPerformed : Bool = false;
-            
-            // If the current hotspot is clicked, drag
-            if (selectedHotspot != null)
-            {
-                if (selector != null && selector.resizable && selector.resizer.mouseOver())
+            case EditorController.TOOL_NONE:
+
+                // Edition tools
+                if (!inspectorPanel.hasFocus())
                 {
-                    currentTool = TOOL_DRAG_POINT;
-                    add(new DraggerTool(selector.resizer, null, this, 
-                        function() {
-                            currentTool = TOOL_NONE;
-                        }, function() {
-                            selector.onResize();
-                        })
-                    );
-                    operationPerformed = true;
-                } 
-                else if (selectedHotspot.mouseOver())
-                {
-                    currentTool = TOOL_DRAG_ELEM;
-                    add(new DraggerTool(selectedHotspot, null, this, function() {
-                        currentTool = TOOL_NONE;
-                    }));
-                    
-                    operationPerformed = true;
-                }
-            }
-            
-            if (!operationPerformed)
-            {
-                for (hotspot in scene.hotspots)
-                {
-                    if (hotspot.mouseOver())
+                    if (FlxG.keys.justPressed.A && FlxG.keys.pressed.ALT)
                     {
-                        if (selectedHotspot != null && selector != null) {
-                            remove(selector);
-                            selector.destroy();
-                            selector = null;
-                        }
-                        
-                        selectedHotspot = hotspot;
-                        add(selector = new SelectorTool(selectedHotspot, true));
-                        inspectorPanel.setSelectedHotspot(selectedHotspot);
+                        currentTool = TOOL_ADD_HOTSPOT;
                         return;
                     }
                 }
-            }
+
+                if (FlxG.mouse.justPressed)
+                {
+                    if (selectedHotspot != null)
+                    {
+                        // If the resizer is selected, resize
+                        if (selector != null && selector.resizable && selector.resizer.mouseOver())
+                        {
+                            currentTool = TOOL_DRAG_POINT;
+                            add(new DraggerTool(selector.resizer, null, this,
+                                function() {
+                                    currentTool = TOOL_NONE;
+                                }, function() {
+                                    selector.onResize();
+                                })
+                            );
+                            return;
+                        }
+                        // If the current hotspot is clicked, drag
+                        else if (selectedHotspot.mouseOver())
+                        {
+                            currentTool = TOOL_DRAG_ELEM;
+                            add(new DraggerTool(selectedHotspot, null, this, function() {
+                                currentTool = TOOL_NONE;
+                            }));
+
+                            return;
+                        }
+                    }
+
+                    // Otherwise, try to select a hotspot
+                    {
+                        for (hotspot in scene.hotspots)
+                        {
+                            if (hotspot.mouseOver())
+                            {
+                                selectHotspot(hotspot);
+                                return;
+                            }
+                        }
+                    }
+
+                    // Else just deselect whatever was selected
+                    deselectHotspot();
+                }
+            case EditorController.TOOL_DRAG_POINT, EditorController.TOOL_DRAG_ELEM:
+                // No?
+            case EditorController.TOOL_ADD_HOTSPOT:
+
+                var hotspot : Hotspot = new Hotspot("_" + scene.hotspots.length, FlxG.mouse.x, FlxG.mouse.y, 100, 100, scene);
+                scene.addHotspot(hotspot);
+                selectHotspot(hotspot);
+
+                currentTool = TOOL_NONE;
+        }
+    }
+
+    function selectHotspot(hotspot : Hotspot)
+    {
+        // De-select previously selected hotspot (if any)
+        deselectHotspot();
+
+        // Select the new hotspot
+        selectedHotspot = hotspot;
+        add(selector = new SelectorTool(selectedHotspot, true));
+        inspectorPanel.setSelectedHotspot(selectedHotspot);
+    }
+
+    function deselectHotspot()
+    {
+        // De-select previously selected hotspot (if any)
+        if (selectedHotspot != null && selector != null) {
+            remove(selector);
+            selector.destroy();
+            selector = null;
+
+            selectedHotspot = null;
         }
     }
 
