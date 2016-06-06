@@ -34,6 +34,9 @@ class EditorController extends FlxUIGroup
         add(inspectorPanel);
     }
 
+    static var sWidth : Int = 1136;
+    static var sHeight: Int = 640;
+
     override public function update(elapsed : Float)
     {
         if (FlxG.keys.justPressed.E && FlxG.keys.pressed.ALT)
@@ -41,8 +44,20 @@ class EditorController extends FlxUIGroup
             inEdition = !inEdition;
             if (inEdition)
             {
+                /*FlxG.camera.setSize(Std.int(sWidth * 1.5), Std.int(sHeight * 1));
+                FlxG.resizeWindow(Std.int(sWidth * 1.5), Std.int(sHeight * 1));
+
+                FlxG.scaleMode = new flixel.system.scaleModes.FixedScaleMode();*/
+
                 currentTool = TOOL_NONE;
                 deselectHotspot();
+            }
+            else
+            {
+                /*FlxG.camera.setSize(sWidth, sHeight);
+                FlxG.resizeWindow(sWidth, sHeight);*/
+
+                trace(FlxG.camera.width + ", " + FlxG.camera.height);
             }
         }
 
@@ -84,7 +99,7 @@ class EditorController extends FlxUIGroup
                     }
                 }
 
-                if (FlxG.mouse.justPressed)
+                if (!inspectorPanel.hasFocus() && FlxG.mouse.justPressed)
                 {
                     if (selectedHotspot != null)
                     {
@@ -161,6 +176,8 @@ class EditorController extends FlxUIGroup
 
             selectedHotspot = null;
         }
+
+        inspectorPanel.setSelectedHotspot(null);
     }
 
     function cleanEdition()

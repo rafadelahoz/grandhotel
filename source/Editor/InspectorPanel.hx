@@ -44,7 +44,14 @@ class InspectorPanel extends FlxUIGroup
     {
         selectedHotspot = hotspot;
 
-        refreshSelectedData();
+        if (selectedHotspot != null)
+        {
+            refreshSelectedData();
+        }
+        else
+        {
+            cleanData();
+        }
     }
 
     function refreshSelectedData()
@@ -56,6 +63,15 @@ class InspectorPanel extends FlxUIGroup
         heightField.text = "" + selectedHotspot.height;
     }
 
+    function cleanData()
+    {
+        idField.text = "";
+        xPosField.text = "";
+        yPosField.text = "";
+        widthField.text = "";
+        heightField.text = "";
+    }
+
     override public function update(elapsed : Float)
     {
         if (selectedHotspot != null)
@@ -64,11 +80,7 @@ class InspectorPanel extends FlxUIGroup
         }
         else
         {
-            idField.text = "";
-            xPosField.text = "";
-            yPosField.text = "";
-            widthField.text = "";
-            heightField.text = "";
+            cleanData();
         }
 
         super.update(elapsed);
