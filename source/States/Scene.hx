@@ -10,7 +10,7 @@ import flixel.addons.ui.FlxUIState;
 
 class Scene extends FlxUIState
 {
-    var id : String;
+    public var id : String;
 
     public var editor : EditorController;
 
