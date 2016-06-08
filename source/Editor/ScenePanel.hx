@@ -41,7 +41,7 @@ class ScenePanel extends FlxUIGroup
         scene.id = newId;
     }
 
-    function handleSaveButton()
+    public function handleSaveButton()
     {
         var writer : SceneWriter = new SceneWriter(scene);
         writer.write();

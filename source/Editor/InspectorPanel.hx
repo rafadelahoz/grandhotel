@@ -34,6 +34,8 @@ class InspectorPanel extends FlxUIGroup
         yPosField = new Field(pLeft, 46, "Y", true, updateY);
         widthField = new Field(pLeft, 56, "Width", true, updateW);
         heightField = new Field(pLeft, 66, "Height", true, updateH);
+        
+        add(new ListField(pLeft, 76, "Type", ["none" => "None", "nav" => "Navigation"]));
 
         add(title);
         add(idField);

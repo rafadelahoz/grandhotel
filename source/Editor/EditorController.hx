@@ -92,6 +92,7 @@ class EditorController extends FlxUIGroup
                 if (FlxG.keys.justPressed.S && FlxG.keys.pressed.CONTROL)
                 {
                     // Save scene
+                    scenePanel.handleSaveButton();
                 }
 
                 // Edition tools
@@ -122,7 +123,7 @@ class EditorController extends FlxUIGroup
                     }
                 }
 
-                if (!inspectorPanel.hasFocus() && !inspectorPanel.mouseOver() && FlxG.mouse.justPressed)
+                if ((!inspectorPanel.visible || !inspectorPanel.hasFocus() && !inspectorPanel.mouseOver()) && FlxG.mouse.justPressed)
                 {
                     if (selectedHotspot != null)
                     {
