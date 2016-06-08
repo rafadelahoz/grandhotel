@@ -16,6 +16,7 @@ class EditorController extends FlxUIGroup
     public var selectedHotspot : Hotspot;
 
     var inspectorPanel : InspectorPanel;
+    var scenePanel : ScenePanel;
 
     public function new(Scene : Scene)
     {
@@ -25,13 +26,19 @@ class EditorController extends FlxUIGroup
 
         inEdition = false;
 
+
         var inspectorButton : FlxUIButton = new FlxUIButton(5, 5, "Inspector", function() {inspectorPanel.visible = !inspectorPanel.visible;});
         add(inspectorButton);
+        inspectorPanel = new InspectorPanel(5, 32);
+        add(inspectorPanel);
+
         var addHotspotButton : FlxUIButton = new FlxUIButton(inspectorButton.x + inspectorButton.width + 5, 5, "Add Hotspot", function() { currentTool = TOOL_ADD_HOTSPOT; });
         add(addHotspotButton);
 
-        inspectorPanel = new InspectorPanel(5, 32);
-        add(inspectorPanel);
+        var scenePanelButton : FlxUIButton = new FlxUIButton(FlxG.width - 195, 5, "Scene panel", function() {scenePanel.visible = !scenePanel.visible;});
+        add(scenePanelButton);
+        scenePanel = new ScenePanel(FlxG.width - 200, 32, scene);
+        add(scenePanel);
     }
 
     static var sWidth : Int = 1136;
@@ -80,6 +87,12 @@ class EditorController extends FlxUIGroup
         switch (currentTool)
         {
             case EditorController.TOOL_NONE:
+
+                // Scene management tools
+                if (FlxG.keys.justPressed.S && FlxG.keys.pressed.CONTROL)
+                {
+                    // Save scene
+                }
 
                 // Edition tools
                 if (!inspectorPanel.hasFocus())
