@@ -44,20 +44,12 @@ class EditorController extends FlxUIGroup
             inEdition = !inEdition;
             if (inEdition)
             {
-                /*FlxG.camera.setSize(Std.int(sWidth * 1.5), Std.int(sHeight * 1));
-                FlxG.resizeWindow(Std.int(sWidth * 1.5), Std.int(sHeight * 1));
-
-                FlxG.scaleMode = new flixel.system.scaleModes.FixedScaleMode();*/
-
                 currentTool = TOOL_NONE;
                 deselectHotspot();
             }
             else
             {
-                /*FlxG.camera.setSize(sWidth, sHeight);
-                FlxG.resizeWindow(sWidth, sHeight);*/
-
-                trace(FlxG.camera.width + ", " + FlxG.camera.height);
+                deselectHotspot();
             }
         }
 
@@ -92,14 +84,32 @@ class EditorController extends FlxUIGroup
                 // Edition tools
                 if (!inspectorPanel.hasFocus())
                 {
+                    // Add hotspot
                     if (FlxG.keys.justPressed.A && FlxG.keys.pressed.ALT)
                     {
                         currentTool = TOOL_ADD_HOTSPOT;
                         return;
                     }
+                    
+                    // Tools when a hotspot is selected
+                    if (selectedHotspot != null)
+                    {
+                        // Delete hotspot
+                        if (FlxG.keys.justPressed.X && FlxG.keys.pressed.ALT)
+                        {
+                            scene.removeHotspot(selectedHotspot);
+                            deselectHotspot();
+                        } 
+                        // Duplicate hotspot
+                        else if (FlxG.keys.justPressed.D && FlxG.keys.pressed.ALT)
+                        {
+                            duplicateHotspot(selectedHotspot);
+                            return;
+                        }
+                    }
                 }
 
-                if (!inspectorPanel.hasFocus() && FlxG.mouse.justPressed)
+                if (!inspectorPanel.hasFocus() && !inspectorPanel.mouseOver() && FlxG.mouse.justPressed)
                 {
                     if (selectedHotspot != null)
                     {
@@ -178,6 +188,16 @@ class EditorController extends FlxUIGroup
         }
 
         inspectorPanel.setSelectedHotspot(null);
+    }
+    
+    function duplicateHotspot(hotspot : Hotspot)
+    {
+        var ww : Float = hotspot.width;
+        var hh : Float = hotspot.height;
+        
+        var newspot : Hotspot = new Hotspot(hotspot.id + "_copy", hotspot.x + ww/2, hotspot.y + hh/2, ww, hh, scene);
+        scene.addHotspot(newspot);
+        selectHotspot(newspot);
     }
 
     function cleanEdition()

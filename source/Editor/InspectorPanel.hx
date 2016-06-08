@@ -1,6 +1,9 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxPoint;
+import flixel.math.FlxRect;
 import flixel.addons.ui.*;
 
 class InspectorPanel extends FlxUIGroup
@@ -102,6 +105,15 @@ class InspectorPanel extends FlxUIGroup
 
         return false;
     }
+    
+    public function mouseOver() : Bool
+    {
+        var rect : FlxRect = new FlxRect();
+        calcBounds(rect);
+        
+        var mousePos : FlxPoint = new FlxPoint(FlxG.mouse.x, FlxG.mouse.y);
+        return rect.containsPoint(mousePos);
+    }
 
     function filter(elem : FlxSprite) : Bool
     {
@@ -137,6 +149,7 @@ class InspectorPanel extends FlxUIGroup
         if (selectedHotspot != null)
         {
             selectedHotspot.setSize(Std.parseInt(newW), selectedHotspot.height);
+            selectedHotspot.onResize(Std.parseInt(newW), selectedHotspot.height);
         }
     }
 
@@ -145,6 +158,7 @@ class InspectorPanel extends FlxUIGroup
         if (selectedHotspot != null)
         {
             selectedHotspot.setSize(selectedHotspot.width, Std.parseInt(newH));
+            selectedHotspot.onResize(selectedHotspot.width, Std.parseInt(newH));
         }
     }
 }

@@ -44,6 +44,11 @@ class Scene extends FlxUIState
     {
         hotspots.add(hotspot);
     }
+    
+    public function removeHotspot(hotspot : Hotspot)
+    {
+        hotspots.remove(hotspot);
+    }
 
     override public function create():Void
 	{
