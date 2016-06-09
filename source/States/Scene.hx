@@ -5,8 +5,8 @@ import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.addons.display.FlxBackdrop;
-
 import flixel.addons.ui.FlxUIState;
+import flixel.addons.transition.TransitionData;
 
 class Scene extends FlxUIState
 {
@@ -17,9 +17,9 @@ class Scene extends FlxUIState
     public var backgrounds : FlxTypedGroup<FlxSprite>;
     public var hotspots : FlxTypedGroup<Hotspot>;
 
-    public function new(sceneId : String)
+    public function new(sceneId : String, ?TransIn:TransitionData, ?TransOut:TransitionData)
     {
-        super();
+        super(TransIn, TransOut);
 
         id = sceneId;
     }

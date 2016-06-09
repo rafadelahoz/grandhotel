@@ -79,18 +79,25 @@ class SceneLoader
         var y : Int = Std.parseInt(hspot.att.y);
         var w : Int = Std.parseInt(hspot.att.w);
         var h : Int = Std.parseInt(hspot.att.h);
+        
+        var hotspot : Hotspot = new Hotspot(id, x, y, w, h, scene);
+        scene.addHotspot(hotspot);
+        
+        var qtype : String = null;        
 
         if (hspot.has.type)
         {
             switch (hspot.att.type)
             {
                 case "nav":
+                    if (hspot.has.target) 
+                    {
+                        var navTarget : String = hspot.att.target;
+                        hotspot.setupNavigation(navTarget);
+                    }
                 default:
             }
         }
-
-        var hotspot : Hotspot = new Hotspot(id, x, y, w, h, scene);
-        scene.addHotspot(hotspot);
     }
 
 }

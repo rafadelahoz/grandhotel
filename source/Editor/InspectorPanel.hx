@@ -19,6 +19,9 @@ class InspectorPanel extends FlxUIGroup
     var yPosField : Field;
     var widthField : Field;
     var heightField : Field;
+    
+    var typeSelector : ListField;
+    var navTargetField : Field;
 
     public function new(X : Float, Y : Float)
     {
@@ -35,14 +38,22 @@ class InspectorPanel extends FlxUIGroup
         widthField = new Field(pLeft, 56, "Width", true, updateW);
         heightField = new Field(pLeft, 66, "Height", true, updateH);
         
-        add(new ListField(pLeft, 76, "Type", ["none" => "None", "nav" => "Navigation"]));
-
+        var typesMap : Map<String, String> = 
+            [Hotspot.TYPE_NONE => "None", 
+            Hotspot.TYPE_NAV => "Navigation"];
+        typeSelector = new ListField(pLeft, 76, "Type", typesMap, onTypeSelect);
+        
+        navTargetField = new Field(pLeft, 86, "Target", updateTarget);
+        
         add(title);
         add(idField);
         add(xPosField);
         add(yPosField);
         add(widthField);
         add(heightField);
+        
+        add(typeSelector);
+        add(navTargetField);
     }
 
     public function setSelectedHotspot(hotspot : Hotspot)
@@ -66,6 +77,8 @@ class InspectorPanel extends FlxUIGroup
         yPosField.text = "" + selectedHotspot.y;
         widthField.text = "" + selectedHotspot.width;
         heightField.text = "" + selectedHotspot.height;
+        typeSelector.text = selectedHotspot.quickType;
+        handleTypeChange(selectedHotspot.quickType);
     }
 
     function cleanData()
@@ -75,6 +88,8 @@ class InspectorPanel extends FlxUIGroup
         yPosField.text = "";
         widthField.text = "";
         heightField.text = "";
+        typeSelector.text = "";
+        navTargetField.text ="";
     }
 
     override public function update(elapsed : Float)
@@ -161,6 +176,40 @@ class InspectorPanel extends FlxUIGroup
         {
             selectedHotspot.setSize(selectedHotspot.width, Std.parseInt(newH));
             selectedHotspot.onResize(selectedHotspot.width, Std.parseInt(newH));
+        }
+    }
+    
+    function onTypeSelect(selected : String)
+    {
+        if (selectedHotspot != null) 
+        {
+            selectedHotspot.quickType = selected;
+        }
+        
+        handleTypeChange(selected);
+    }
+    
+    function handleTypeChange(type : String) 
+    {
+        switch (type)
+        {
+            case Hotspot.TYPE_NONE:
+                navTargetField.visible = false;
+                navTargetField.text = "";
+            case Hotspot.TYPE_NAV:
+                navTargetField.visible = true;
+                if (selectedHotspot != null && selectedHotspot.navTarget != null)
+                    navTargetField.text = selectedHotspot.navTarget;
+                else
+                    navTargetField.text = "";
+        }
+    }
+    
+    function updateTarget(newTarget : String, action : String)
+    {
+        if (selectedHotspot != null)
+        {
+            selectedHotspot.navTarget = newTarget;
         }
     }
 }

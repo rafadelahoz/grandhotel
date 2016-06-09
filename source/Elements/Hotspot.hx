@@ -5,11 +5,19 @@ import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxPoint;
 
+import flixel.addons.transition.TransitionData;
+
 class Hotspot extends FlxSprite
 {
+    public static var TYPE_NONE : String = "none";
+    public static var TYPE_NAV  : String = "nav";
+    
     public var scene : Scene;
 
     public var id : String;
+    
+    public var quickType : String;
+    public var navTarget : String;
 
     public function new(Id : String, X : Float, Y : Float, Width : Float, Height : Float, Scene : Scene)
     {
@@ -19,6 +27,14 @@ class Hotspot extends FlxSprite
         onResize(Width, Height);
 
         scene = Scene;
+        
+        quickType = TYPE_NONE;
+    }
+    
+    public function setupNavigation(targetScene : String)
+    {
+        quickType = TYPE_NAV;
+        navTarget = targetScene;
     }
 
     override public function update(elapsed : Float)
@@ -28,7 +44,7 @@ class Hotspot extends FlxSprite
 
             if (FlxG.mouse.justPressed && mouseOver())
             {
-                trace(id);
+                onInteract();
             }
         }
         else
@@ -50,5 +66,21 @@ class Hotspot extends FlxSprite
     public function onResize(width : Float, height : Float)
     {
         makeGraphic(Std.int(width), Std.int(height), 0x44440044);
+    }
+    
+    public function onInteract()
+    {
+        switch (quickType)
+        {
+            case Hotspot.TYPE_NAV:
+                if (navTarget == null)
+                    trace("No navigation target set");
+                else 
+                {
+                    FlxG.switchState(new Scene(navTarget, new TransitionData(0.25), new TransitionData(0.25)));
+                }
+            case Hotspot.TYPE_NONE:
+                trace(id);
+        }
     }
 }

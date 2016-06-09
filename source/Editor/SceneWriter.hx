@@ -78,11 +78,24 @@ class SceneWriter
         for (hotspot in scene.hotspots)
         {
             var hsNode : Xml = Xml.createElement("hotspot");
+            
+            // Id
             hsNode.set("id", hotspot.id);
+            
+            // Dimensions
             hsNode.set("x", Std.string(hotspot.x));
             hsNode.set("y", Std.string(hotspot.y));
             hsNode.set("w", Std.string(hotspot.width));
             hsNode.set("h", Std.string(hotspot.height));
+            
+            // Type
+            hsNode.set("type", hotspot.quickType);
+            switch (hotspot.quickType) 
+            {
+                case Hotspot.TYPE_NAV:
+                    hsNode.set("target", hotspot.navTarget);
+            }
+            
             hotspotsNode.addChild(hsNode);
         }
 
