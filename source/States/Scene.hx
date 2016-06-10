@@ -22,6 +22,8 @@ class Scene extends FlxUIState
         super(TransIn, TransOut);
 
         id = sceneId;
+
+        Director.get().scene = this;
     }
 
     function loadScene(sceneId : String)
@@ -44,7 +46,7 @@ class Scene extends FlxUIState
     {
         hotspots.add(hotspot);
     }
-    
+
     public function removeHotspot(hotspot : Hotspot)
     {
         hotspots.remove(hotspot);

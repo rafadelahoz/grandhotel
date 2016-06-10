@@ -14,6 +14,8 @@ class MenuState extends FlxState
 		super.create();
 
 		FlxG.mouse.useSystemCursor = true;
+
+		new Director();
 	}
 
 	override public function update(elapsed:Float):Void
@@ -22,7 +24,7 @@ class MenuState extends FlxState
 
 		if (FlxG.mouse.justPressed)
 		{
-			FlxG.switchState(new Scene("scene2"));
+			Director.get().toScene("scene2");
 		}
 	}
 }
